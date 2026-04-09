@@ -29,6 +29,17 @@ let metricsState = {
     resetTimer: 60
 };
 
+// --- PER-USER TOKEN STATS ---
+let userTokenStats = {}; // { username: tokens_used }
+
+// Reset tokens for EACH user every 60 seconds
+setInterval(() => {
+    Object.keys(userTokenStats).forEach(user => {
+        userTokenStats[user] = 0;
+    });
+    console.log(`[RESET] Per-user token stats cleared`);
+}, 60000);
+
 // Strict 1s interval for deterministic metrics
 setInterval(() => {
     metricsState.resetTimer -= 1;
@@ -81,8 +92,41 @@ app.get('/metrics', (req, res) => {
     });
 });
 
+// --- PER-USER TOKEN STATS ENDPOINT ---
+app.get('/token-stats', (req, res) => {
+    const stats = Object.entries(userTokenStats).map(([username, used]) => ({
+        username,
+        tokens_used: used,
+        tokens_remaining: Math.max(0, 100 - used)
+    }));
+    res.json(stats);
+});
+
 // --- DASHBOARD TOKEN TRACKING ---
 app.use('/api/',
+    // 0. Per-user visual token tracking
+    (req, res, next) => {
+        const username = req.headers['x-api-key'] || 'anonymous';
+        if (userTokenStats[username] === undefined) userTokenStats[username] = 0;
+
+        // Enforce the 100 token limit
+        if (userTokenStats[username] >= 100) {
+            return res.status(429).json({
+                status: "Rate Limited",
+                error: "User quota exceeded (100 tokens/60s)",
+                tokens_remaining: 0
+            });
+        }
+
+        // Increment on success
+        res.on('finish', () => {
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+                userTokenStats[username] = (userTokenStats[username] || 0) + 1;
+            }
+        });
+        next();
+    },
+
     (req, res, next) => {
         let tokens = metricsState.tokens ?? 100;
         const type = req.body?.type || req.query?.type || 'low';

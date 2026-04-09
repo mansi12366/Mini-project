@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css">
+    <title>Throttling Sentinel - Token Usage Analytics</title>
+</head>
+
+<body>
+    <div id="background-animation">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="bg-shape shape-3"></div>
+    </div>
+
+    <div id="app">
+        <div id="history-content">
+            <header>
+                <div class="logo-group">
+                    <div class="logo-row">
+                        <div class="logo-orb small-orb"></div>
+                        <h1>SENTINEL</h1>
+                        <div class="status-badge-inline">
+                            <div class="pulse"></div>
+                            <span>QUOTA ANALYTICS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="/dashboard.html" class="btn-ghost-small" style="text-decoration: none; color: inherit;">
+                        <i class='bx bx-arrow-back'></i> DASHBOARD
+                    </a>
+                </div>
+            </header>
+
+            <main class="dashboard-grid">
+                <!-- Stats Summary -->
+                <section class="col-span-12 dashboard-grid">
+                    <div class="col-span-6 card glass-pane">
+                        <div class="card-title">
+                            <i class='bx bxs-group' style="color: var(--primary)"></i>
+                            ACTIVE USERS TRACKED
+                        </div>
+                        <div class="metric-value"><span id="stat-active-users">0</span></div>
+                    </div>
+                    <div class="col-span-6 card glass-pane">
+                        <div class="card-title">
+                            <i class='bx bxs-timer' style="color: var(--accent)"></i>
+                            AUTO-RESET WINDOW
+                        </div>
+                        <div class="metric-value">60s</div>
+                        <div class="metric-unit">RESETS ALL USERS TO 100 TOKENS</div>
+                    </div>
+                </section>
+
+                <!-- Token Usage Table -->
+                <section class="col-span-12 card glass-pane">
+                    <div class="card-title">
+                        <i class='bx bxs-bar-chart-alt-2'></i>
+                        PER-USER TOKEN USAGE
+                        <div style="margin-left: auto; font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                            <div class="pulse-small"></div>
+                            LIVE UPDATING
+                        </div>
+                    </div>
+                    <div class="history-table-container">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>USERNAME / API KEY</th>
+                                    <th>TOKENS USED</th>
+                                    <th>TOKENS REMAINING</th>
+                                    <th>USAGE PERCENTAGE</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="token-stats-table-body">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                        <div id="stats-empty" style="text-align: center; padding: 3rem; color: var(--text-muted); display: none;">
+                            <i class='bx bxs-data' style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p style="margin-top: 1rem;">No token usage data recorded yet.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/src/token-stats.js"></script>
+</body>
+
+</html>
