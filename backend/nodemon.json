@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "../frontend/*",
+        "tests/*",
+        "node_modules/*",
+        "*.json",
+        "*.md",
+        "*.bat",
+        "*.sh"
+    ],
+    "ext": "js,mjs,json"
+}
