@@ -5,6 +5,7 @@ const CapacityMetricsSchema = new mongoose.Schema({
 
     // System capacity snapshot
     system_load: {
+       cpu_percent: { type: Number, min: 0, max: 100 },
         cpu_percent: Number,
         memory_percent: Number,
         active_connections: Number,
